@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="navbar navbar-inverse bg-inverse" role="navigation">
+        <div class="row">
+            <a class="col navbar-brand" href="#">Money Lover</a>
+            <div class="col-4 text-right">
+                User info
+            </div>
+        </div>
+    </div>
+    <div class="row m-1 p-1">
+        <div class="col-3">
+            Menu here
+        </div>
+        <div class="col-9">
+            Info here
+            @RenderBody()
+        </div>
+    </div>
+    
+</body>
+</html>

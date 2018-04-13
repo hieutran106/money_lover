@@ -8,9 +8,9 @@ using MoneyLover.Models;
 
 namespace MoneyLover.Models
 {
-    public class AppIdentityDbContext : IdentityDbContext<AppUser>
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
-        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
         }

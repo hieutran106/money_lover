@@ -24,17 +24,19 @@ namespace MoneyLover
         public void ConfigureServices(IServiceCollection services)
         {
             // START - config identity framework
-            services.AddDbContext<AppIdentityDbContext>(options => {
-                options.UseSqlServer(Configuration["Data:MoneyLoverIdentity:ConnectionString"]);
+            services.AddDbContext<AppDbContext>(options => {
+                options.UseSqlServer(Configuration["Data:MoneyLoverDb:ConnectionString"]);
             });
+
             services.AddIdentity<AppUser, IdentityRole>(opts => {
                 opts.Password.RequiredLength = 6;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
-            }).AddEntityFrameworkStores<AppIdentityDbContext>()
+            }).AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
+            services.AddTransient<UserManager<AppUser>>();
             // END - config identity framework
             services.AddMvc();
         }

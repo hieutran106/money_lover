@@ -14,12 +14,14 @@ namespace MoneyLover.Models.SeedData
         private const string adminPassword = "Secret123@";
         public static async void EnsurePopulated(IApplicationBuilder app)
         {
+            
             UserManager<AppUser> userManager = app.ApplicationServices
                                                     .GetRequiredService<UserManager<AppUser>>();
+            
             AppUser user = await userManager.FindByNameAsync(adminUser);
             if (user == null)
             {
-                user = new AppUser(adminUser);
+                user = new AppUser(adminUser) { Email="admin@example.com"};
                 await userManager.CreateAsync(user, adminPassword);
             }
         }
