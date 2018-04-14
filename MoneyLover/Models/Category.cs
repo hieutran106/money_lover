@@ -9,7 +9,7 @@ namespace MoneyLover.Models
     public class Category
     {
         [BindNever]
-        public int CategoryID { get; set; }
+        public int CategoryId { get; set; }
         public String Name { get; set; }
     }
 }

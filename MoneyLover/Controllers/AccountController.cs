@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MoneyLover.Controllers
 {
-    [Authorize]    
+   
     public class AccountController : Controller
     {
         private UserManager<AppUser> userManager;
@@ -21,15 +21,13 @@ namespace MoneyLover.Controllers
             this.signInManager = signInManager;
         }
 
-        [AllowAnonymous]
+        
         public ViewResult Login()
         {
             return View(new LoginModel());
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
             if (ModelState.IsValid)
@@ -38,7 +36,8 @@ namespace MoneyLover.Controllers
                 if (user!=null)
                 {
                     await signInManager.SignOutAsync();
-                    var result = await signInManager.PasswordSignInAsync(user, loginModel.Password,false,false);
+                    var result = await signInManager.PasswordSignInAsync(user, loginModel.Password,true,false);
+                    
                     if (result.Succeeded)
                     {
                         return RedirectToAction("Index", "Home");
@@ -48,7 +47,32 @@ namespace MoneyLover.Controllers
             ModelState.AddModelError("", "Invalid name or password");
             return View(loginModel);
         }
+        public ViewResult Register()
+        {
+            return View(new RegisterModel());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser user = new AppUser { UserName = model.Name, Email = model.Email };
+                IdentityResult result = await userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Login");
+                } else
+                {
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            return View(model);
+        }
 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();

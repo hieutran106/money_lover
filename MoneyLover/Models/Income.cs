@@ -9,8 +9,10 @@ namespace MoneyLover.Models
     public class Income
     {
         [BindNever]
-        public int IncomeID { get; set; }
+        public int IncomeId { get; set; }
         public string Description { get; set; }
+        
+        //define relationships
         public AppUser User { get; set; }
     }
 }

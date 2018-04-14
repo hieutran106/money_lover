@@ -36,8 +36,23 @@ namespace MoneyLover
                 opts.Password.RequireDigit = false;
             }).AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                // If the LoginPath isn't set, ASP.NET Core defaults 
+                // the path to /Account/Login.
+                options.LoginPath = "/Account/Login";
+                // If the AccessDeniedPath isn't set, ASP.NET Core defaults 
+                // the path to /Account/AccessDenied.
+                options.AccessDeniedPath = "/Account/bbbb";
+                options.SlidingExpiration = true;
+            });
             services.AddTransient<UserManager<AppUser>>();
             // END - config identity framework
+            services.AddTransient<IRepository, EFRepository>();
             services.AddMvc();
         }
 
@@ -49,7 +64,8 @@ namespace MoneyLover
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-            IdentitySeedData.EnsurePopulated(app);
+            SeedData.EnsurePopulated(app);
+            
         }
     }
 }
