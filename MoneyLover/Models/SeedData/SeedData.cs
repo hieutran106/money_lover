@@ -33,6 +33,8 @@ namespace MoneyLover.Models.SeedData
             {
                 Category clothingCategory = new Category { Name = "Clothing" };
                 Category colesCategory = new Category { Name = "Coles" };
+                Category interestCategory = new Category { Name = "Monthly Interest" };
+                
                 context.Categories.AddRange(clothingCategory, colesCategory);
                 if (!context.Expenses.Any())
                 {
@@ -52,7 +54,19 @@ namespace MoneyLover.Models.SeedData
                     }
                     );
 
-            }
+
+                }
+                if (!context.Incomes.Any())
+                {
+                    context.Add(new Income
+                    {
+                        Amount = 220m,
+                        Category = interestCategory,
+                        Date = DateTime.Now,
+                        Description = "Monthly Interest",
+                        User = user
+                    });
+                }
             }
             context.SaveChanges();            
         }
