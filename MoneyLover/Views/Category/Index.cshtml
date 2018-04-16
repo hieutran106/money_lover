@@ -13,11 +13,11 @@
         foreach (Category category in Model)
         {
             <tr>
-                <td>@category.CategoryID</td>
+                <td>@category.CategoryId</td>
                 
                 <td>@category.Name</td>
                 <td>
-                    <form asp-action="Delete" asp-route-id="@category.CategoryID" method="post">
+                    <form asp-action="Delete" asp-route-id="@category.CategoryId" method="post">
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                     </form>
                 </td>
