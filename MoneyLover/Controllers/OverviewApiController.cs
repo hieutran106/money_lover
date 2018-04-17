@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MoneyLover.Models;
 using MoneyLover.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoneyLover.Controllers
 {
@@ -22,14 +23,34 @@ namespace MoneyLover.Controllers
             this.userManager = userManager;
         }
         [HttpGet("{user}/{days}")]
-        public ApiModel Get(string user,int days)
+        public async Task<ApiModel> GetAsync(string user,int days)
         {
+            DateTime now = DateTime.Now.Date;
+            DateTime fromDate = now.AddDays(-days);
+
+            AppUser currUser = await userManager.FindByNameAsync(user);
+            IEnumerable<Expense> expenses = repo.GetExpenses(currUser).Where(e => fromDate <= e.Date && e.Date <= now).Include(e => e.Category);
+            Dictionary<string, decimal> proportion = new Dictionary<string, decimal>();
+            foreach (Expense e in expenses)
+            {
+                if (proportion.ContainsKey(e.Category.Name))
+                {
+                    proportion[e.Category.Name] += e.Amount;
+                } else
+                {
+                    proportion[e.Category.Name] = e.Amount;
+                }
+            }
+
+            decimal totalExpense = expenses.Sum(e => e.Amount);
+            decimal totalIncome = repo.GetIncome(currUser).Where(e => fromDate <= e.Date && e.Date <= now).Sum(e => e.Amount);
             ApiModel apiModel = new ApiModel
             {
-                FromDate = "aaaa",
-                ToDate = "bbbb",
-                TotalIncome = 12.43m.ToString("c"),
-                TotalExpense = 50m.ToString("c")
+                FromDate = fromDate.ToString("dd/MM/yyyy"),
+                ToDate = now.ToString("dd/MM/yyyy"),
+                TotalIncome = totalExpense.ToString("c"),
+                TotalExpense = totalIncome.ToString("c"),
+                ExpenseProportion=proportion
             };
             return apiModel;
         }

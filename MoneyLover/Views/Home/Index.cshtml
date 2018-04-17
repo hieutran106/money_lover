@@ -79,15 +79,39 @@
                 }
             });
             //API
-            var x = 3;
             var currUser = '@Model.Username';
+            function getColor(index) {
+                let colors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"];
+                if (0 <= index && index <= colors.length - 1) {
+                    return colors[index]
+                } else {
+                    return colors[colors.length - 1];
+                }
+
+            };
             $('#time-selection').change(function (e) {
                 var timeSelection = $(this).val();
                 var url = "/api/overview/" + currUser+ "/" + timeSelection;
                 console.log(url);
                 //request data
                 $.getJSON(url, function (data) {
-                    console.log(data);
+                    let chartData = {
+                        labels: [],
+                        datasets: [{
+                            backgroundColor: [],
+                            data: []
+                        }]
+                    };
+                    Object.keys(data.expenseProportion).forEach((key, index) => {
+                        console.log("Index:" + index + "key: " + key + " value: " + data.expenseProportion[key]);
+                        chartData.labels.push(key);
+                        chartData.datasets[0].backgroundColor.push(getColor(index));
+                        chartData.datasets[0].data.push(data.expenseProportion[key]);
+
+                    });
+                    pieChart.data = chartData;
+                    pieChart.update();
+                    console.log(chartData);
                 });
             });
         });
