@@ -11,7 +11,7 @@ namespace MoneyLover.Components
         public IViewComponentResult Invoke()
         {
             ViewBag.Controller = RouteData?.Values["controller"];
-            string[] data = new string[] { "Home", "Expense", "Income", "Caterogy"};
+            string[] data = new string[] { "Home", "Expense", "Income", "Category"};
             return View(data);
         }
     }

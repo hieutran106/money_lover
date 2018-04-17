@@ -1,1 +1,188 @@
-﻿<h2>Index from home controller</h2>
+﻿@model OverviewModel
+
+@section scripts {
+    <script src="~/lib/chartjs/dist/Chart.bundle.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            console.log("test js");
+            //pie chart
+            var pieCtx = document.getElementById("piechart").getContext("2d");
+            var pieChart = new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ["Male", "Female", "Unknown"],
+                    datasets: [{
+                        backgroundColor: [
+                            "#2ecc71",
+                            "#3498db",
+                            "#95a5a6",
+                        ],
+                        data: [25, 35, 40]
+                    }]
+                },
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                //get the concerned dataset
+                                var dataset = data.datasets[tooltipItem.datasetIndex];
+                                //calculate the total of this data set
+                                var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
+                                    return previousValue + currentValue;
+                                });
+                                //get the current items value
+                                var currentValue = dataset.data[tooltipItem.index];
+                                //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
+                                var precentage = Math.floor(((currentValue / total) * 100) + 0.5);
+
+                                return precentage + "%";
+                            }
+                        }
+                    } 
+
+                }
+            });
+
+
+            //bar char
+            var barCtx = document.getElementById("barchart").getContext("2d");
+            var color = Chart.helpers.color;
+            var barChart = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: ["January", "February", "March"],
+                    datasets: [{
+                        label: 'Income',
+                        backgroundColor: "rgba(255, 99, 132, 0.2)",
+                        borderColor: "rgb(255, 99, 132)",
+                        borderWidth: 1,
+                        fill: false,
+                        data:[10,20,40]
+                    }, {
+                            label: 'Expense',
+                            backgroundColor: "rgba(75, 192, 192, 0.2)",
+                            borderColor: "rgba(75, 192, 192)",
+                            borderWidth: 1,
+                            data: [5, 80, 100]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Bar Chart'
+                    }
+                }
+            });
+            //API
+            var x = 3;
+            var currUser = '@Model.Username';
+            $('#time-selection').change(function (e) {
+                var timeSelection = $(this).val();
+                var url = "/api/overview/" + currUser+ "/" + timeSelection;
+                console.log(url);
+                //request data
+                $.getJSON(url, function (data) {
+                    console.log(data);
+                });
+            });
+        });
+       
+    </script>
+
+}
+<h2>Overview</h2>
+<div class="row m-1 p-1">
+
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                
+                    <h5>Financial summary</h5>
+                   
+                <div class="form-group float-right">
+                    <select id="time-selection" class="form-control-sm">
+                        <option  value="7">Weekly</option>
+                        <option selected value="14">Fortnightly</option>
+                        <option value="18">Monthly</option>
+                    </select>
+                </div>
+                    
+                
+            </div>
+           
+            <div class="card-body">
+                <div class="m-2">
+                    <strong>Total expense:</strong> @Model.TotalExpense.ToString("c")
+                </div>
+                <div class="m-2">
+                    <strong>Total income:</strong> @Model.TotalIncome.ToString("c")
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <h5 class="card-header">
+                Detail expense
+            </h5>
+            <div class="card-body">
+                <table class="table table-sm table-bordered">
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                    </tr>
+                    @if (Model.Expense.Count() == 0)
+    {
+                <tr><td colspan="5" class="text-center">No expenses</td></tr>
+}
+else
+{
+foreach (Expense e in Model.Expense)
+{
+                <tr>
+                    <td>@e.ExpenseId</td>
+                    <td>@e.Description</td>
+                    <td>@e.Date</td>
+                    <td>@e.Category.Name</td>
+                    <td>@e.Amount.ToString("c")</td>
+                </tr>
+}
+}
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-6 mt-1">
+        <div class="card">
+            <h5 class="card-header">
+                Proportion of expenses
+            </h5>
+            <div class="card-body">
+                <canvas id="piechart"></canvas>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-6 mt-1">
+        <div class="card">
+            <h5 class="card-header">
+                Income and Expenses
+
+            </h5>
+            <div class="card-body">
+                <canvas id="barchart"></canvas>
+            </div>
+
+        </div>
+    </div>
+</div>
