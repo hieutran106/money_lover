@@ -45,7 +45,7 @@
             });
 
 
-            //bar char
+            //bar chart
             var barCtx = document.getElementById("barchart").getContext("2d");
             var color = Chart.helpers.color;
             var barChart = new Chart(barCtx, {
@@ -114,6 +114,35 @@
                     console.log(chartData);
                 });
             });
+            //request data for bar chart
+            $.getJSON('/api/overview/' + currUser, function (data) {
+                console.log(data);
+                let chartData = {
+                    labels: [],
+                    datasets: [{
+                        label: 'Income',
+                        backgroundColor: "rgba(255, 99, 132, 0.2)",
+                        borderColor: "rgb(255, 99, 132)",
+                        borderWidth: 1,
+                        fill: false,
+                        data: []
+                    }, {
+                        label: 'Expense',
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderColor: "rgba(75, 192, 192)",
+                        borderWidth: 1,
+                        data: []
+                    }]
+                };
+                for (let i = 0; i < 3; i++) {
+                    chartData.labels.push(data.months[i]);
+                    chartData.datasets[0].data.push(data.expenses[i]);
+                    chartData.datasets[1].data.push(data.incomes[i]);
+
+                }
+                barChart.data = chartData;
+                barChart.update();
+            });
         });
        
     </script>
@@ -134,9 +163,7 @@
                         <option selected value="14">Fortnightly</option>
                         <option value="18">Monthly</option>
                     </select>
-                </div>
-                    
-                
+                </div>                                  
             </div>
            
             <div class="card-body">

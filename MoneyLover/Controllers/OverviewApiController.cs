@@ -23,7 +23,7 @@ namespace MoneyLover.Controllers
             this.userManager = userManager;
         }
         [HttpGet("{user}/{days}")]
-        public async Task<ApiModel> GetAsync(string user,int days)
+        public async Task<PieChartApiModel> GetAsync(string user,int days)
         {
             DateTime now = DateTime.Now.Date;
             DateTime fromDate = now.AddDays(-days);
@@ -44,7 +44,7 @@ namespace MoneyLover.Controllers
 
             decimal totalExpense = expenses.Sum(e => e.Amount);
             decimal totalIncome = repo.GetIncome(currUser).Where(e => fromDate <= e.Date && e.Date <= now).Sum(e => e.Amount);
-            ApiModel apiModel = new ApiModel
+            PieChartApiModel apiModel = new PieChartApiModel
             {
                 FromDate = fromDate.ToString("dd/MM/yyyy"),
                 ToDate = now.ToString("dd/MM/yyyy"),
@@ -52,6 +52,28 @@ namespace MoneyLover.Controllers
                 TotalExpense = totalIncome.ToString("c"),
                 ExpenseProportion=proportion
             };
+            return apiModel;
+        }
+
+        [HttpGet("{user}")]
+        public async Task<BarChartApiModel> GetAsync(string user)
+        {
+            AppUser currUser = await userManager.FindByNameAsync(user);
+            BarChartApiModel apiModel = new BarChartApiModel();
+            //Get data of the last 3 months
+            for (int i=0;i<3;i++)
+            {
+                DateTime time = DateTime.Today.AddMonths(-i);
+                string month = time.ToString("MMMM");
+                
+                decimal totalExpenses = repo.GetExpenses(currUser).Where(e => e.Date.Month == time.Month).Sum(e => e.Amount);
+                decimal totalIncome = repo.GetIncome(currUser).Where(e => e.Date.Month == time.Month).Sum(e => e.Amount);
+
+                apiModel.Months[i] = month;
+                apiModel.Expenses[i] = totalExpenses;
+                apiModel.Incomes[i] = totalIncome;
+            }
+            
             return apiModel;
         }
     }
