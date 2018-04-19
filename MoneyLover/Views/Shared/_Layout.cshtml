@@ -3,32 +3,48 @@
 <head>
     <title>@ViewBag.Title</title>
     <meta name="viewport" content="width=device-width" />
+
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-    <link href="~/css/main.css" rel="stylesheet"/>
-    @RenderSection("scripts",false)
+    <link href="~/lib/fontawesome/css/font-awesome.min.css"  rel="stylesheet"/>
+    <link href="~/lib/bootstrap-datepicker/dist/css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet" />
+    <link href="~/css/main.css" rel="stylesheet" />
+    @RenderSection("scripts", false)
 </head>
 
 <body>
     <div class="navbar navbar-inverse bg-inverse" role="navigation">
-        <div class="row">
-            <a class="col navbar-brand" href="#">Money Lover</a>
-            @await  Component.InvokeAsync("UserNavbar")
+        <div>
+            <ul class="nav justify-content-center">
+                <li class="nav-item">
+                    <a class="navbar-brand" href="#">Money Lover</a>
+                </li>
+                @await Component.InvokeAsync("UserNavbar")
+            </ul>
+            
         </div>
-       
+      
+           
+
     </div>
+
 
     <div class="row m-1 p-1">
         <div class="col-3 mt-3">
-            @await  Component.InvokeAsync("Menu")
+            @await Component.InvokeAsync("Menu")
         </div>
         <div class="col-9 mt-3">
-            @if (TempData["message"]!=null)
+            @if (ViewBag.Title != null)
             {
-                <div class="alert alert-success">@TempData["message"]</div> 
+                <div class="alert alert-info">@ViewBag.Title</div>
+            }
+
+            @if (TempData["message"] != null)
+            {
+                <div class="alert alert-success">@TempData["message"]</div>
             }
             @RenderBody()
         </div>
     </div>
-    
+
 </body>
 </html>

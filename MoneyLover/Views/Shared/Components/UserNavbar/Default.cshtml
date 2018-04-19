@@ -1,6 +1,11 @@
 ﻿@model string
 
-<ul class="nav navbar-nav navbar-right text-white">
-    <li><a asp-action="Logout" asp-controller="Account">@Model</a></li>
+<li class="nav-item ml-auto">
+    
 
-</ul>
+    <a asp-action="Logout" asp-controller="Account" class="text-white nav-link">
+        Welcome @Model
+        <i class="fa fa-sign-out" aria-hidden="true"></i>
+    </a>
+
+</li>

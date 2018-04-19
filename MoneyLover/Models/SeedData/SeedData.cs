@@ -17,17 +17,22 @@ namespace MoneyLover.Models.SeedData
         public static async void EnsurePopulated(IApplicationBuilder app)
         {
             AppDbContext context = app.ApplicationServices.GetRequiredService<AppDbContext>();
-            context.Database.EnsureCreated();
-            
+            context.Database.EnsureCreated();            
 
             UserManager<AppUser> userManager = app.ApplicationServices
                                                     .GetRequiredService<UserManager<AppUser>>();
 
-            AppUser user = await userManager.FindByNameAsync(adminUser);
-            if (user == null)
+            AppUser user1 = await userManager.FindByNameAsync(adminUser);
+            if (user1 == null)
             {
-                user = new AppUser(adminUser) { Email = "admin@example.com" };
-                await userManager.CreateAsync(user, adminPassword);
+                user1 = new AppUser(adminUser) { Email = "admin@example.com" };
+                await userManager.CreateAsync(user1, adminPassword);
+            }
+            AppUser user2 = await userManager.FindByNameAsync("hieu106");
+            if (user2==null)
+            {
+                user2 = new AppUser("hieu106") { Email = "hieu106@example.com" };
+                await userManager.CreateAsync(user2, "Secret");
             }
             if (!context.Categories.Any())
             {
@@ -42,19 +47,17 @@ namespace MoneyLover.Models.SeedData
                     context.Expenses.AddRange(new Expense {
                         Amount = 12m,
                         Category = clothingCategory,
-                        Date = DateTime.Now,
+                        Date = DateTime.Today,
                         Description = "HM",
-                        User = user
+                        User = user1
                     }, new Expense {
                         Amount = 14.85m,
                         Category = colesCategory,
-                        Date = DateTime.Now,
+                        Date = DateTime.Today,
                         Description = "Coles",
-                        User = user
+                        User = user1
                     }
                     );
-
-
                 }
                 if (!context.Incomes.Any())
                 {
@@ -62,9 +65,9 @@ namespace MoneyLover.Models.SeedData
                     {
                         Amount = 220m,
                         Category = interestCategory,
-                        Date = DateTime.Now,
+                        Date = DateTime.Today,
                         Description = "Monthly Interest",
-                        User = user
+                        User = user1
                     });
                 }
             }

@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<Expense>
-
+@{ 
+    ViewBag.Title = "List of expenses";
+}
 <table class="table table-sm table-bordered">
     <tr>
         <th>ID</th>
@@ -20,7 +22,7 @@
             <tr>
                 <td>@e.ExpenseId</td>
                 <td>@e.Description</td>
-                <td>@e.Date</td>
+                <td>@e.Date.ToString("dd/MM/yyyy")</td>
                 <td>@e.Category.Name</td>
                 <td>@e.Amount.ToString("c")</td>
                 <td>

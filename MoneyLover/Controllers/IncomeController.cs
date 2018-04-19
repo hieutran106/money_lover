@@ -36,7 +36,7 @@ namespace MoneyLover.Controllers
         public ViewResult Create()
         {
             ViewBag.Categories = new SelectList(repo.Categories, nameof(Category.Name), nameof(Category.Name));
-            return View("Edit", new Income() { Date = DateTime.Now });
+            return View("Edit", new Income() { Date = DateTime.Today });
         }
         public ViewResult Edit(int id)
         {

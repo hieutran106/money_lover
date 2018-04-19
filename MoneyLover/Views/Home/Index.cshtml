@@ -1,5 +1,7 @@
 ﻿@model OverviewModel
-
+@{ 
+    ViewBag.Title = "Summary";
+}
 @section scripts {
     <script src="~/lib/chartjs/dist/Chart.bundle.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -10,17 +12,7 @@
             var pieCtx = document.getElementById("piechart").getContext("2d");
             var pieChart = new Chart(pieCtx, {
                 type: 'pie',
-                data: {
-                    labels: ["Male", "Female", "Unknown"],
-                    datasets: [{
-                        backgroundColor: [
-                            "#2ecc71",
-                            "#3498db",
-                            "#95a5a6",
-                        ],
-                        data: [25, 35, 40]
-                    }]
-                },
+                
                 options: {
                     tooltips: {
                         callbacks: {
@@ -51,21 +43,7 @@
             var barChart = new Chart(barCtx, {
                 type: 'bar',
                 data: {
-                    labels: ["January", "February", "March"],
-                    datasets: [{
-                        label: 'Income',
-                        backgroundColor: "rgba(255, 99, 132, 0.2)",
-                        borderColor: "rgb(255, 99, 132)",
-                        borderWidth: 1,
-                        fill: false,
-                        data:[10,20,40]
-                    }, {
-                            label: 'Expense',
-                            backgroundColor: "rgba(75, 192, 192, 0.2)",
-                            borderColor: "rgba(75, 192, 192)",
-                            borderWidth: 1,
-                            data: [5, 80, 100]
-                    }]
+                    
                 },
                 options: {
                     responsive: true,
@@ -73,26 +51,39 @@
                         position: 'top',
                     },
                     title: {
-                        display: true,
-                        text: 'Chart.js Bar Chart'
+                        display: true
+                    },
+                    hover: {
+                        animationDuration: 0
+                    },
+                    animation: {
+                        duration: 1,
+                        onComplete: function () {
+                            var chartInstance = this.chart,
+                                ctx = chartInstance.ctx;
+                            ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+
+                            this.data.datasets.forEach(function (dataset, i) {
+                                var meta = chartInstance.controller.getDatasetMeta(i);
+                                meta.data.forEach(function (bar, index) {
+                                    if (dataset.data[index] > 0) {
+                                        var data = "$" + dataset.data[index];
+                                        ctx.fillText(data, bar._model.x, bar._model.y - 5);
+
+                                    }
+                                    
+                                });
+                            });
+                        }
                     }
                 }
             });
-            //API
-            var currUser = '@Model.Username';
-            function getColor(index) {
-                let colors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"];
-                if (0 <= index && index <= colors.length - 1) {
-                    return colors[index]
-                } else {
-                    return colors[colors.length - 1];
-                }
-
-            };
-            $('#time-selection').change(function (e) {
-                var timeSelection = $(this).val();
-                var url = "/api/overview/" + currUser+ "/" + timeSelection;
-                console.log(url);
+            //variable declaration
+            let currUser = '@Model.Username';
+            function getPieChartData(timeSelection) {
+                var url = "/api/overview/" + currUser + "/" + timeSelection;
                 //request data
                 $.getJSON(url, function (data) {
                     let chartData = {
@@ -113,7 +104,27 @@
                     pieChart.update();
                     console.log(chartData);
                 });
+
+            };
+            function getColor(index) {
+                let colors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"];
+                if (0 <= index && index <= colors.length - 1) {
+                    return colors[index]
+                } else {
+                    return colors[colors.length - 1];
+                }
+
+            };
+
+            //API
+            
+            
+            $('#time-selection').change(function (e) {
+                let timeSelection = $(this).val();
+                getPieChartData(timeSelection);
             });
+            //request data for pie chart
+            getPieChartData(14);
             //request data for bar chart
             $.getJSON('/api/overview/' + currUser, function (data) {
                 console.log(data);
@@ -148,92 +159,93 @@
     </script>
 
 }
-<h2>Overview</h2>
-<div class="row m-1 p-1">
 
-    <div class="col-6">
-        <div class="card">
-            <div class="card-header">
-                
+    <div class="row m-1 p-1">
+
+
+        <div class="col-6">
+            <div class="card">
+                <h5 class="card-header">
+                    Recent expenses
+                </h5>
+                <div class="card-body">
+                    <table class="table table-sm table-bordered">
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                        </tr>
+                        @if (Model.Expense.Count() == 0)
+                    {
+                        <tr><td colspan="5" class="text-center">No expenses</td></tr>
+                }
+                else
+                {
+                    foreach (Expense e in Model.Expense)
+                    {
+                        <tr>
+                            <td>@e.ExpenseId</td>
+                            <td>@e.Description</td>
+                            <td>@e.Date</td>
+                            <td>@e.Category.Name</td>
+                            <td>@e.Amount.ToString("c")</td>
+                        </tr>
+                }
+            }
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-6 mt-1">
+            <div class="card">
+                <h5 class="card-header">
+                    Last 3 months
+                </h5>
+                <div class="card-body">
+                    <canvas id="barchart"></canvas>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-6 mt-1">
+            <div class="card">
+                <h5 class="card-header">
+                    Proportion of expenses
+                </h5>
+                <div class="card-body">
+                    <canvas id="piechart"></canvas>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-6 mt-1">
+            <div class="card">
+                <div class="card-header">
+
                     <h5>Financial summary</h5>
-                   
-                <div class="form-group float-right">
-                    <select id="time-selection" class="form-control-sm">
-                        <option  value="7">Weekly</option>
-                        <option selected value="14">Fortnightly</option>
-                        <option value="18">Monthly</option>
-                    </select>
-                </div>                                  
-            </div>
-           
-            <div class="card-body">
-                <div class="m-2">
-                    <strong>Total expense:</strong> @Model.TotalExpense.ToString("c")
+
+                    <div class="form-group float-right">
+                        <select id="time-selection" class="form-control-sm">
+                            <option value="7">Weekly</option>
+                            <option selected value="14">Fortnightly</option>
+                            <option value="18">Monthly</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="m-2">
-                    <strong>Total income:</strong> @Model.TotalIncome.ToString("c")
+
+                <div class="card-body">
+                    <div class="m-2">
+                        <strong>Total expense:</strong> @Model.TotalExpense.ToString("c")
+                    </div>
+                    <div class="m-2">
+                        <strong>Total income:</strong> @Model.TotalIncome.ToString("c")
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
-    <div class="col-6">
-        <div class="card">
-            <h5 class="card-header">
-                Detail expense
-            </h5>
-            <div class="card-body">
-                <table class="table table-sm table-bordered">
-                    <tr>
-                        <th>ID</th>
-                        <th>Description</th>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                    </tr>
-                    @if (Model.Expense.Count() == 0)
-    {
-                <tr><td colspan="5" class="text-center">No expenses</td></tr>
-}
-else
-{
-foreach (Expense e in Model.Expense)
-{
-                <tr>
-                    <td>@e.ExpenseId</td>
-                    <td>@e.Description</td>
-                    <td>@e.Date</td>
-                    <td>@e.Category.Name</td>
-                    <td>@e.Amount.ToString("c")</td>
-                </tr>
-}
-}
-                </table>
-            </div>
-
-        </div>
-    </div>
-    <div class="col-6 mt-1">
-        <div class="card">
-            <h5 class="card-header">
-                Proportion of expenses
-            </h5>
-            <div class="card-body">
-                <canvas id="piechart"></canvas>
-            </div>
-
-        </div>
-    </div>
-    <div class="col-6 mt-1">
-        <div class="card">
-            <h5 class="card-header">
-                Income and Expenses
-
-            </h5>
-            <div class="card-body">
-                <canvas id="barchart"></canvas>
-            </div>
-
-        </div>
-    </div>
-</div>

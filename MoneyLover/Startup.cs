@@ -29,7 +29,7 @@ namespace MoneyLover
             });
 
             services.AddIdentity<AppUser, IdentityRole>(opts => {
-                opts.Password.RequiredLength = 6;
+                opts.Password.RequiredLength = 5;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireUppercase = false;
@@ -41,7 +41,7 @@ namespace MoneyLover
             {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60*12);
                 // If the LoginPath isn't set, ASP.NET Core defaults 
                 // the path to /Account/Login.
                 options.LoginPath = "/Account/Login";

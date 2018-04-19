@@ -2,9 +2,11 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "bootstrap": "4.0.0-alpha.6",
+    "bootstrap": "4.0.0",
     "fontawesome": "4.7.0",
     "jquery": "3.2.1",
-    "chartjs": "2.7.2"
+    "chartjs": "2.7.2",
+    "bootstrap-datepicker": "1.8.0",
+
   }
 }

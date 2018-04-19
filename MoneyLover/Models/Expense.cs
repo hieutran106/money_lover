@@ -13,8 +13,12 @@ namespace MoneyLover.Models
         public string Description { get; set; }
         [Required]
         public Category Category { get; set; }
+
+        [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Please enter a positive price")]
         public decimal Amount { get; set; }
+
+        [Required]
         [UIHint("Date")]
         public DateTime Date { get; set; }
 

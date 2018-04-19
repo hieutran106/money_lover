@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Sharing";
+}
+@section scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () { 
+            $('.input-daterange').datepicker({
+                daysOfWeekDisabled: "0"
+            });
+        });
+    </script>
+
+}
+    <div class="row justify-content-center">
+        <form>
+<div class="form-group">
+    <label>Test</label>
+    <input class="form-control"/>
+</div>
+        </form>
+    </div>
+   
