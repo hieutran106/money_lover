@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SharingSelectionModel
+@{
     ViewBag.Title = "Sharing";
 }
 @section scripts {
@@ -6,19 +7,42 @@
     <script src="~/lib/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () { 
-            $('.input-daterange').datepicker({
-                daysOfWeekDisabled: "0"
+            $('#form-container input[type="text"]').datepicker({
+                todayHighlight: true,
+                format:'dd/mm/yyyy'
+            
             });
         });
     </script>
 
 }
-    <div class="row justify-content-center">
-        <form>
-<div class="form-group">
-    <label>Test</label>
-    <input class="form-control"/>
-</div>
-        </form>
-    </div>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+    <form id="form-container" asp-action="Sharing" method="post">
+        <h6 class="bg-info p-1 text-white">Select persons you want to share:</h6>
+        <table class="table table-bordered table-sm">
+            
+            @for(int i=0;i<Model.Ids.Length;i++)
+            {
+                 <tr>
+                    <td>@Model.Usernames[i]</td>
+                    <td>
+                        <input type="checkbox" name="Ids" value="@Model.Ids[i]" />
+                    </td>
+                </tr>
+
+            }
+        </table>
+        <div class="form-group">
+            <label>From Date:</label>
+            <input asp-for="FromDate" asp-format="{0:dd/MM/yyyy}" type="text"  class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>To Date:</label>
+            <input asp-for="ToDate"  asp-format="{0:dd/MM/yyyy}" type="text" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Calculate</button>
+    </form>
+
    
