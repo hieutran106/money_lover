@@ -12,7 +12,7 @@ namespace MoneyLover.Models.ViewModels
         public string[] Usernames { get; set; }
         public IEnumerable<AppUser> Stakeholders { get; set; }
 
-        [Required]      
+        [Required]
         public DateTime FromDate { get; set; }
 
         [Required]

@@ -8,6 +8,7 @@
         <th>Description</th>
         <th>Date</th>
         <th>Category</th>
+        <th>Share</th>
         <th>Amount</th>
         <th></th>
     </tr>
@@ -24,6 +25,7 @@
                 <td>@e.Description</td>
                 <td>@e.Date.ToString("dd/MM/yyyy")</td>
                 <td>@e.Category.Name</td>
+                <td>@(e.ShareExpense?"Yes":"No")</td>
                 <td>@e.Amount.ToString("c")</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@e.ExpenseId" class="btn btn-sm btn-secondary">Edit</a>

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<string>
 @foreach(string controller in Model)
 {
-    <a class="btn btn-block @(controller==ViewBag.Controller?"btn-primary":"btn-secondary")"
+    <a class="btn btn-block @(controller==ViewBag.Controller?"btn-outline-primary active":"btn-outline-secondary")"
        asp-action="Index" asp-controller="@controller">
     @controller
     </a>

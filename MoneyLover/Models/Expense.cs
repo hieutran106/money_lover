@@ -19,9 +19,8 @@ namespace MoneyLover.Models
         public decimal Amount { get; set; }
 
         [Required]
-        [UIHint("Date")]
         public DateTime Date { get; set; }
-
+        public bool ShareExpense { get; set; }
         //define relationships
         public AppUser User { get; set; }
     }

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using MoneyLover.Models;
 using MoneyLover.Models.SeedData;
 using Microsoft.AspNetCore.Identity;
+using MoneyLover.Infrastructure;
 
 namespace MoneyLover
 {
@@ -53,7 +54,9 @@ namespace MoneyLover
             services.AddTransient<UserManager<AppUser>>();
             // END - config identity framework
             services.AddTransient<IRepository, EFRepository>();
-            services.AddMvc();
+            services.AddMvc(opts => {
+                opts.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,7 +13,6 @@ namespace MoneyLover.Models
         public string Description { get; set; }
 
         [Required]
-        [UIHint("Date")]
         public DateTime Date { get; set; }
 
         [Required]

@@ -94,6 +94,7 @@ namespace MoneyLover.Models
                     dbEntry.Category = expense.Category;
                     dbEntry.Date = expense.Date;
                     dbEntry.Description = expense.Description;
+                    dbEntry.ShareExpense = expense.ShareExpense;
                 }
             }
             context.SaveChanges();
