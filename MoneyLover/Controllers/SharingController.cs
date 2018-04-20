@@ -41,11 +41,23 @@ namespace MoneyLover.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult Sharing(SharingSelectionModel model)
+        public async Task<ViewResult> Sharing(SharingSelectionModel model)
         {
 
-            SharingModel a = new SharingModel();
-            return View(a);
+            SharingViewModel viewModel = new SharingViewModel {
+                FromDate = model.FromDate,
+                ToDate = model.ToDate
+            };
+            foreach (string id in model.Ids)
+            {
+                AppUser user = await userManager.FindByIdAsync(id);
+                if (user!=null)
+                {
+                    viewModel.AddUser(user);
+                }
+            }
+            viewModel.Calculate();
+            return View(viewModel);
         }
     }
 }

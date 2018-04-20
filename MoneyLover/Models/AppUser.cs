@@ -16,7 +16,7 @@ namespace MoneyLover.Models
         {
 
         }
-        ICollection<Expense> Expenses { get; set; }
-        ICollection<Income> Incomes { get; set; }
+        public ICollection<Expense> Expenses { get; set; }
+        public ICollection<Income> Incomes { get; set; }
     }
 }
