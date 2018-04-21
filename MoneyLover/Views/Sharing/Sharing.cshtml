@@ -1,5 +1,50 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-<div>Hello</div>
+﻿@model SharingViewModel
+<h4>Detail expenses during the period of time</h4>
+<table class="table table-bordered table-sm">
+    @for(int i=0;i < Model.Lines.Count();i++)
+    {
+        <tr>
+            <td><b>@(i + 1)</b></td>
+            <td colspan="4"><b>@Model.Lines[i].UserName</b></td>
+        </tr>
+        @foreach(Expense expense in Model.Lines[i].Expenses)
+        {
+            <tr>
+                <td></td>
+                <td>@expense.Description</td>
+                <td>@expense.Date.ToString("dd/MM/yyyy")</td>
+                <td>@expense.Category.Name</td>
+                <td class="text-right">@expense.Amount.ToString("c")</td>
+            </tr>
+
+        }
+        <tr>
+            <td colspan="4" class="text-right"><b>Total:</b></td>
+            <td class="text-right"><b>@Model.Lines[i].TotalExpense.ToString("c")</b></td>
+        </tr>
+
+    }
+        <tr class="text-info">
+            <td colspan="2" class="text-right">Average:</td>
+            <td class="text-right">@Model.Average</td>
+            <td class="text-right">Total:</td>
+            <td class="text-right">@Model.Total.ToString("c")</td>
+
+        </tr>
+</table>
+<h4>Summary</h4>
+<table class="table table-bordered table-sm">
+    <tr>
+        <td>Num</td>
+        <td>User name</td>
+        <td class="text-right">Debt</td>
+    </tr>
+    @for (int i = 0; i < Model.Lines.Count(); i++)
+    {
+        <tr>
+            <td>@(i+1)</td>
+            <td>@Model.Lines[i].UserName</td>
+            <td class="text-right">@System.String.Format("{0:c2}", @Model.Lines[i].Debt)</td>
+        </tr>
+    }
+</table> 

@@ -17,11 +17,11 @@
                 
                 <td>@category.Name</td>
                 <td>
-                    <form asp-action="Delete" asp-route-id="@category.CategoryId" method="post">
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    <a asp-action="Edit" asp-route-id="@category.CategoryId" class="btn btn-sm btn-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }
     }
 </table>
+<a asp-action="Create" class="btn btn-primary">Add Category</a>

@@ -18,7 +18,7 @@
     </script>
 
 }
-<h2>Edit income</h2>
+
 <div asp-validation-summary="All" class="text-danger"></div>
 <form id="form-container" asp-action="Edit" method="post">
     <input type="hidden" asp-for="IncomeId" />
@@ -40,7 +40,6 @@
         <label asp-for="Amount"></label>
         <input class="form-control" asp-for="Amount" />
     </div>
-    <div class="text-center">
-        <button class="btn btn-primary" type="submit">Save</button>
-    </div>
+
+    <button class="btn btn-primary" type="submit">Save</button>
 </form>

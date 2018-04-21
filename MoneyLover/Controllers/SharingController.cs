@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoneyLover.Models;
 using MoneyLover.Models.ViewModels;
 
+using Microsoft.EntityFrameworkCore;
 namespace MoneyLover.Controllers
 {
     public class SharingController : Controller
@@ -41,23 +42,33 @@ namespace MoneyLover.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<ViewResult> Sharing(SharingSelectionModel model)
+        public async Task<IActionResult> Sharing(SharingSelectionModel model)
         {
-
-            SharingViewModel viewModel = new SharingViewModel {
-                FromDate = model.FromDate,
-                ToDate = model.ToDate
-            };
-            foreach (string id in model.Ids)
+            if (ModelState.IsValid)
             {
-                AppUser user = await userManager.FindByIdAsync(id);
-                if (user!=null)
+                SharingViewModel viewModel = new SharingViewModel
                 {
-                    viewModel.AddUser(user);
+                    FromDate = model.FromDate,
+                    ToDate = model.ToDate
+                };
+
+                foreach (string id in model.Ids)
+                {
+                    AppUser user = await userManager.FindByIdAsync(id);
+                    if (user != null)
+                    {
+                        IEnumerable<Expense> expenses = repo.GetExpenses(user).Where(e => e.ShareExpense && (model.FromDate <= e.Date && e.Date <= model.ToDate));
+                        viewModel.AddUser(user.UserName, expenses);
+                    }
                 }
+                viewModel.Calculate();
+                return View(viewModel);
+            } else
+            {
+                TempData["message"] = "Please select persons you want to share";
+                return RedirectToAction("Index");
             }
-            viewModel.Calculate();
-            return View(viewModel);
+            
         }
     }
 }

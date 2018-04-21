@@ -8,9 +8,9 @@ namespace MoneyLover.Models.ViewModels
 {
     public class SharingSelectionModel
     {
+        [Required]
         public string[] Ids { get; set; }
         public string[] Usernames { get; set; }
-        public IEnumerable<AppUser> Stakeholders { get; set; }
 
         [Required]
         public DateTime FromDate { get; set; }
@@ -31,10 +31,14 @@ namespace MoneyLover.Models.ViewModels
         {
             Lines = new List<SharingLine>();
         }
-        public void AddUser(AppUser user)
+        public void AddUser(string userName, IEnumerable<Expense> expenses)
         {
-            SharingLine line = new SharingLine { User = user };
-            line.CalculateTotalExpense(FromDate, ToDate);
+            SharingLine line = new SharingLine {
+                UserName =userName,
+                Expenses = expenses
+            };
+            line.CalculateTotalExpense();
+            Lines.Add(line);
         }
         public void Calculate()
         {
@@ -48,12 +52,13 @@ namespace MoneyLover.Models.ViewModels
     }
     public class SharingLine
     {
-        public AppUser User { get; set; }
+        public string UserName { get; set; }
+        public IEnumerable<Expense> Expenses { get; set; }
         public decimal TotalExpense { get; set; }
         public decimal Debt { get; set; }
-        public void CalculateTotalExpense(DateTime fromDate, DateTime toDate)
+        public void CalculateTotalExpense()
         {
-            TotalExpense = User.Expenses.Where(e => e.ShareExpense && (fromDate <= e.Date && e.Date <= toDate)).Sum(e => e.Amount);
+            TotalExpense = Expenses.Sum(e => e.Amount);
         }
         public void CalculateDebt(decimal average)
         {

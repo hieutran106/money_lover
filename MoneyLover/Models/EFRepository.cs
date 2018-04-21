@@ -8,7 +8,10 @@ namespace MoneyLover.Models
 {
     public interface IRepository
     {
+        //category
         IQueryable<Category> Categories { get; }
+        Category DeleteCategory(int categoryId);
+        void SaveCategory(Category category);
 
         IQueryable<Expense> Expenses { get; }
         IQueryable<Expense> GetExpenses(AppUser user);
@@ -19,6 +22,7 @@ namespace MoneyLover.Models
         IQueryable<Income> GetIncome(AppUser user);
         Income DeleteIncome(int incomeId);
         void SaveIncome(Income income);
+        
 
     }
     public class EFRepository : IRepository
@@ -33,6 +37,25 @@ namespace MoneyLover.Models
         public IQueryable<Expense> Expenses => context.Expenses;
 
         public IQueryable<Income> Incomes => context.Incomes;
+
+        public Category DeleteCategory(int categoryId)
+        {
+            bool hasInexpenseRelation=context.Expenses.Include(e => e.Category).Any(e => e.Category.CategoryId == categoryId);
+            bool hasIncomeRelation = context.Incomes.Include(e => e.Category).Any(e => e.Category.CategoryId == categoryId);
+            if (hasInexpenseRelation|| hasIncomeRelation)
+            {
+                return null;
+            } else
+            {
+                Category dbEntry = context.Categories.FirstOrDefault(c => c.CategoryId == categoryId);
+                if (dbEntry != null)
+                {
+                    context.Categories.Remove(dbEntry);
+                    context.SaveChanges();
+                }
+                return dbEntry;
+            }         
+        }
 
         public Expense DeleteExpense(int expenseId)
         {
@@ -78,6 +101,22 @@ namespace MoneyLover.Models
             {
                 return context.Incomes.Include(e => e.Category);
             }
+        }
+
+        public void SaveCategory(Category category)
+        {
+            if (category.CategoryId==0)
+            {
+                context.Add(category);
+            } else
+            {
+                Category dbEntry = context.Categories.FirstOrDefault(c => c.CategoryId == category.CategoryId);
+                if (dbEntry != null)
+                {
+                    dbEntry.Name = category.Name;
+                }
+            }
+            context.SaveChanges();
         }
 
         public void SaveExpense(Expense expense)

@@ -7,7 +7,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            console.log("test js");
             //pie chart
             var pieCtx = document.getElementById("piechart").getContext("2d");
             var pieChart = new Chart(pieCtx, {
@@ -42,9 +41,6 @@
             var color = Chart.helpers.color;
             var barChart = new Chart(barCtx, {
                 type: 'bar',
-                data: {
-                    
-                },
                 options: {
                     responsive: true,
                     legend: {
@@ -102,7 +98,20 @@
                     });
                     pieChart.data = chartData;
                     pieChart.update();
-                    console.log(chartData);
+                    //Update text in summary box
+                    console.log(data);
+                    let content = `<div>
+                        <strong>From:</strong> ${data.fromDate} - <strong>To:</strong> ${data.toDate}
+                    </div>
+                    <div>
+                        <strong>Total Expense:</strong> ${data.totalExpense}
+                    </div>
+                    <div>
+                        <strong>Total Income:</strong> ${data.totalIncome}
+                    </div>
+                    `;
+                    $('#summary-body').html(content);
+                    console.log($('#to-date'));
                 });
 
             };
@@ -147,8 +156,8 @@
                 };
                 for (let i = 0; i < 3; i++) {
                     chartData.labels.push(data.months[i]);
-                    chartData.datasets[0].data.push(data.expenses[i]);
-                    chartData.datasets[1].data.push(data.incomes[i]);
+                    chartData.datasets[1].data.push(data.expenses[i]);
+                    chartData.datasets[0].data.push(data.incomes[i]);
 
                 }
                 barChart.data = chartData;
@@ -160,7 +169,7 @@
 
 }
 
-    <div class="row m-1 p-1">
+    <div class="row">
 
 
         <div class="col-6">
@@ -188,7 +197,7 @@
                         <tr>
                             <td>@e.ExpenseId</td>
                             <td>@e.Description</td>
-                            <td>@e.Date</td>
+                            <td>@e.Date.ToString("dd/MM/yyyy")</td>
                             <td>@e.Category.Name</td>
                             <td>@e.Amount.ToString("c")</td>
                         </tr>
@@ -237,11 +246,13 @@
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <div class="m-2">
+                <div id="summary-body" class="card-body">
+                    <div id="from-date">ss</div>
+                    <div id="to-date"></div>
+                    <div id="total-expense" class="m-2">
                         <strong>Total expense:</strong> @Model.TotalExpense.ToString("c")
                     </div>
-                    <div class="m-2">
+                    <div id="total-income" class="m-2">
                         <strong>Total income:</strong> @Model.TotalIncome.ToString("c")
                     </div>
                 </div>

@@ -12,7 +12,7 @@ namespace MoneyLover.Models.SeedData
     public static class SeedData
     {
         private const string adminUser = "admin";
-        private const string adminPassword = "Secret123@";
+        private const string adminPassword = "Secret";
 
         public static async void EnsurePopulated(IApplicationBuilder app)
         {
@@ -45,17 +45,34 @@ namespace MoneyLover.Models.SeedData
                 {
                     
                     context.Expenses.AddRange(new Expense {
-                        Amount = 12m,
+                        Amount = 7m,
                         Category = clothingCategory,
                         Date = DateTime.Today,
                         Description = "HM",
+                        ShareExpense=true,
                         User = user1
                     }, new Expense {
-                        Amount = 14.85m,
+                        Amount = 9m,
                         Category = colesCategory,
                         Date = DateTime.Today,
                         Description = "Coles",
+                        ShareExpense=true,
                         User = user1
+                    }, new Expense {
+                        Amount = 5m,
+                        Category = colesCategory,
+                        Date = DateTime.Today,
+                        Description = "Coles",
+                        ShareExpense = true,
+                        User = user2
+                    }, new Expense
+                    {
+                        Amount = 10m,
+                        Category = clothingCategory,
+                        Date = DateTime.Today,
+                        Description = "Jay Jay",
+                        ShareExpense = false,
+                        User = user2
                     }
                     );
                 }
