@@ -26,7 +26,10 @@ namespace MoneyLover
         {
             // START - config identity framework
             services.AddDbContext<AppDbContext>(options => {
-                options.UseSqlServer(Configuration["Data:MoneyLoverDb:ConnectionString"]);
+
+                //options.UseSqlServer(Configuration["Data:MoneyLoverDb:ConnectionString"]);
+                options.UseSqlServer(RdsHelper.GetRdsConnectionString(Configuration));
+
             });
 
             services.AddIdentity<AppUser, IdentityRole>(opts => {
@@ -67,8 +70,7 @@ namespace MoneyLover
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-            SeedData.EnsurePopulated(app);
-            
+            SeedData.EnsurePopulated(app);          
         }
     }
 }
