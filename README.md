@@ -21,4 +21,4 @@ See [demo](http://ec2-13-55-128-136.ap-southeast-2.compute.amazonaws.com:8080)
 - Amazon web service
 
 ###### Screenshots
-![Screenshot 1](https://github.com/hieutran106/money_lover/raw/master/screenshot.gif | width=800)
+![Screenshot 1](https://github.com/hieutran106/money_lover/raw/master/screenshot.gif)
