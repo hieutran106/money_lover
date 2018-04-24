@@ -24,7 +24,7 @@ namespace MoneyLover.Controllers
         {
             DateTime now = DateTime.Today;
             AppUser user = await userManager.GetUserAsync(HttpContext.User);
-            IEnumerable<Expense> expenses = repo.GetExpenses(user).Take(10);
+            IEnumerable<Expense> expenses = repo.GetExpenses(user).Take(6);
 
             OverviewModel model = new OverviewModel
             {
