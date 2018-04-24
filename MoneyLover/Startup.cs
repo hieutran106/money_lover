@@ -17,8 +17,12 @@ namespace MoneyLover
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-        public Startup(IConfiguration config) => Configuration = config;
+        private IConfiguration Configuration { get; }
+        private IHostingEnvironment CurrentEnvironment { get; set; }
+        public Startup(IConfiguration config, IHostingEnvironment env) {
+            Configuration = config;
+            CurrentEnvironment = env;
+        }
         
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -26,10 +30,14 @@ namespace MoneyLover
         {
             // START - config identity framework
             services.AddDbContext<AppDbContext>(options => {
-
-                //options.UseSqlServer(Configuration["Data:MoneyLoverDb:ConnectionString"]);
+                //if (CurrentEnvironment.IsDevelopment())
+                //{
+                //    options.UseSqlServer(Configuration["Data:MoneyLoverDb:ConnectionString"]);
+                //} else
+                //{
+                //    options.UseSqlServer(RdsHelper.GetRdsConnectionString(Configuration));
+                //}                               
                 options.UseSqlServer(RdsHelper.GetRdsConnectionString(Configuration));
-
             });
 
             services.AddIdentity<AppUser, IdentityRole>(opts => {

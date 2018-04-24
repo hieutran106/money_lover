@@ -83,7 +83,7 @@ namespace MoneyLover.Models
         {
             if (user != null)
             {
-                return context.Expenses.Where(e => e.User == user).Include(e => e.Category);
+                return context.Expenses.Where(e => e.User == user).Include(e => e.Category).OrderByDescending(e => e.Date);
             } else
             {
                 return context.Expenses.Include(e => e.Category);
@@ -95,7 +95,7 @@ namespace MoneyLover.Models
         {
             if (user != null)
             {
-                return context.Incomes.Where(e => e.User == user).Include(i => i.Category);
+                return context.Incomes.Where(e => e.User == user).Include(i => i.Category).OrderByDescending(e => e.Date);
             }
             else
             {

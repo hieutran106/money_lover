@@ -13,6 +13,7 @@ namespace MoneyLover.Models.ViewModels
         [Required]
         public string Email { get; set; }
         [Required]
+        [UIHint("Password")]
         public string Password { get; set; }
     }
 }
