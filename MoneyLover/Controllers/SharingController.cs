@@ -76,7 +76,9 @@ namespace MoneyLover.Controllers
                 {
                     DirectoryInfo directoryInfo= System.IO.Directory.CreateDirectory("invoice");
                     Stream content = report.Content;
-                    string path = Path.Combine(directoryInfo.FullName, GenerateFileName());
+                    string fileName = GenerateFileName();
+                    string path = Path.Combine(Directory.GetCurrentDirectory(),"invoice",fileName);
+
                     using (FileStream fs = System.IO.File.Create(path))
                     {
                         content.CopyTo(fs);
@@ -85,8 +87,8 @@ namespace MoneyLover.Controllers
                     //Write Invoice to DB
                     Invoice dbEntry = new Invoice
                     {
-                        CreatedTime = DateTime.Now,
-                        Filename = path
+                        CreatedDate = DateTime.Now,
+                        Filename = fileName
                     };
                     repo.SaveInvoice(dbEntry);
                 });               

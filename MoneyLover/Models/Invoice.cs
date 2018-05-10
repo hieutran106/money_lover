@@ -8,7 +8,7 @@ namespace MoneyLover.Models
     public class Invoice
     {
         public int InvoiceId { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string Filename { get; set; }
     }
 }

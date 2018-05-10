@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -91,8 +92,14 @@ namespace MoneyLover.Models
             Invoice dbEntry = context.Invoices.FirstOrDefault(i => i.InvoiceId == invoiceId);
             if (dbEntry!=null)
             {
+                //delete physical file
+                string file = Path.Combine(Directory.GetCurrentDirectory(),
+                           "invoice", dbEntry.Filename);
+                File.Delete(file);
                 context.Invoices.Remove(dbEntry);
                 context.SaveChanges();
+                
+                
             }
             return dbEntry;
         }
