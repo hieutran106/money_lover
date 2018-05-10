@@ -22,6 +22,11 @@ namespace MoneyLover.Models
         IQueryable<Income> GetIncome(AppUser user);
         Income DeleteIncome(int incomeId);
         void SaveIncome(Income income);
+
+        //Invoice
+        IQueryable<Invoice> Invoices { get; }
+        Invoice DeleteInvoice(int invoiceId);
+        void SaveInvoice(Invoice invoice);
         
 
     }
@@ -37,6 +42,8 @@ namespace MoneyLover.Models
         public IQueryable<Expense> Expenses => context.Expenses;
 
         public IQueryable<Income> Incomes => context.Incomes;
+
+        public IQueryable<Invoice> Invoices => context.Invoices;
 
         public Category DeleteCategory(int categoryId)
         {
@@ -74,6 +81,17 @@ namespace MoneyLover.Models
             if (dbEntry != null)
             {
                 context.Incomes.Remove(dbEntry);
+                context.SaveChanges();
+            }
+            return dbEntry;
+        }
+
+        public Invoice DeleteInvoice(int invoiceId)
+        {
+            Invoice dbEntry = context.Invoices.FirstOrDefault(i => i.InvoiceId == invoiceId);
+            if (dbEntry!=null)
+            {
+                context.Invoices.Remove(dbEntry);
                 context.SaveChanges();
             }
             return dbEntry;
@@ -155,6 +173,15 @@ namespace MoneyLover.Models
                     dbEntry.Date = income.Date;
                     dbEntry.Description = income.Description;
                 }
+            }
+            context.SaveChanges();
+        }
+
+        public void SaveInvoice(Invoice invoice)
+        {
+            if (invoice.InvoiceId == 0)
+            {
+                context.Add(invoice);
             }
             context.SaveChanges();
         }

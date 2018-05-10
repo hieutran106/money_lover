@@ -12,6 +12,9 @@ using MoneyLover.Models;
 using MoneyLover.Models.SeedData;
 using Microsoft.AspNetCore.Identity;
 using MoneyLover.Infrastructure;
+using jsreport.AspNetCore;
+using jsreport.Local;
+using jsreport.Binary;
 
 namespace MoneyLover
 {
@@ -30,14 +33,15 @@ namespace MoneyLover
         {
             // START - config identity framework
             services.AddDbContext<AppDbContext>(options => {
-                //if (CurrentEnvironment.IsDevelopment())
-                //{
-                //    options.UseSqlServer(Configuration["Data:MoneyLoverDb:ConnectionString"]);
-                //} else
-                //{
-                //    options.UseSqlServer(RdsHelper.GetRdsConnectionString(Configuration));
-                //}                               
-                options.UseSqlServer(RdsHelper.GetRdsConnectionString(Configuration));
+                if (CurrentEnvironment.IsDevelopment())
+                {
+                    options.UseSqlServer(Configuration["Data:MoneyLoverDb:ConnectionString"]);
+                }
+                else
+                {
+                    options.UseSqlServer(RdsHelper.GetRdsConnectionString(Configuration));
+                }
+                //options.UseSqlServer(RdsHelper.GetRdsConnectionString(Configuration));
             });
 
             services.AddIdentity<AppUser, IdentityRole>(opts => {
@@ -68,6 +72,11 @@ namespace MoneyLover
             services.AddMvc(opts => {
                 opts.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
             });
+            //pdf
+            services.AddJsReport(new LocalReporting()
+                .UseBinary(JsReportBinary.GetBinary())
+                .AsUtility()
+                .Create());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
