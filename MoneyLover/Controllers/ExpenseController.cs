@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MoneyLover.Models.ViewModels;
 
 namespace MoneyLover.Controllers
 {
@@ -25,8 +26,17 @@ namespace MoneyLover.Controllers
         public async Task<IActionResult> Index(int page=1)
         {
             AppUser user = await userManager.GetUserAsync(HttpContext.User);
-            IEnumerable<Expense> expenses = repo.GetExpenses(user).Skip((page - 1) * pageSize).Take(pageSize);
-            return View(repo.GetExpenses(user));
+            IEnumerable<Expense> expenses = repo.GetExpenses(user);
+
+            return View(new ExpenseListViewModel {
+                Expenses = expenses.Skip((page - 1) * pageSize).Take(pageSize),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = pageSize,
+                    TotalItems = expenses.Count()
+                }
+            });
         }
         public IActionResult Delete(int id)
         {

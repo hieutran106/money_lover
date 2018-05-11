@@ -12,7 +12,9 @@
         });
     </script>
 }
-    <h4>Detail expenses during the period of time</h4>
+    <h3>Detail expenses during the period of time</h3>
+    <p>From: @Model.FromDate.ToLongDateString()</p>
+    <p>To: @Model.ToDate.ToLongDateString()</p>
     <table class="table table-bordered table-sm">
         @for (int i = 0; i < Model.Lines.Count(); i++)
         {

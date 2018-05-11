@@ -31,6 +31,7 @@ namespace MoneyLover.Controllers
             AppUser currUser = await userManager.FindByNameAsync(user);
             IEnumerable<Expense> expenses = repo.GetExpenses(currUser).Where(e => fromDate <= e.Date && e.Date <= now).Include(e => e.Category);
             Dictionary<string, decimal> proportion = new Dictionary<string, decimal>();
+            
             foreach (Expense e in expenses)
             {
                 if (proportion.ContainsKey(e.Category.Name))
@@ -41,15 +42,15 @@ namespace MoneyLover.Controllers
                     proportion[e.Category.Name] = e.Amount;
                 }
             }
-
+            
             decimal totalExpense = expenses.Sum(e => e.Amount);
             decimal totalIncome = repo.GetIncome(currUser).Where(e => fromDate <= e.Date && e.Date <= now).Sum(e => e.Amount);
             PieChartApiModel apiModel = new PieChartApiModel
             {
                 FromDate = fromDate.ToString("dd/MM/yyyy"),
                 ToDate = now.ToString("dd/MM/yyyy"),
-                TotalIncome = totalExpense.ToString("c"),
-                TotalExpense = totalIncome.ToString("c"),
+                TotalIncome = totalIncome.ToString("c"),
+                TotalExpense = totalExpense.ToString("c"),
                 ExpenseProportion=proportion
             };
             return apiModel;
