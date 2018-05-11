@@ -25,7 +25,7 @@ namespace MoneyLover.Controllers
             Invoice invoice = repo.DeleteInvoice(id);
             if (invoice != null)
             {
-                TempData["message"] = "A category was deleted";
+                TempData["message"] = "An invoice was deleted";
             }
             else
             {

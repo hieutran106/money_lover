@@ -97,9 +97,7 @@ namespace MoneyLover.Models
                            "invoice", dbEntry.Filename);
                 File.Delete(file);
                 context.Invoices.Remove(dbEntry);
-                context.SaveChanges();
-                
-                
+                context.SaveChanges();               
             }
             return dbEntry;
         }

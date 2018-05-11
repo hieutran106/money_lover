@@ -16,14 +16,16 @@ namespace MoneyLover.Controllers
     {
         private IRepository repo;
         private UserManager<AppUser> userManager;
+        private int pageSize = 2;
         public ExpenseController(IRepository repo, UserManager<AppUser> userManager)
         {
             this.repo = repo;
             this.userManager = userManager;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page=1)
         {
             AppUser user = await userManager.GetUserAsync(HttpContext.User);
+            IEnumerable<Expense> expenses = repo.GetExpenses(user).Skip((page - 1) * pageSize).Take(pageSize);
             return View(repo.GetExpenses(user));
         }
         public IActionResult Delete(int id)
